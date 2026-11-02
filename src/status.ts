@@ -1,13 +1,18 @@
 import { readdirSync } from 'node:fs';
 import type { RigConfig } from './config.js';
+import { readNight } from './digest/read-night.js';
+import type { StatusCounts } from './digest/types.js';
 import { lastBeat, type Beat } from './heartbeat.js';
 
 export type Status = {
   adapter: string;
   installed: string;
   lastBeat: Beat | null;
-  nights: string[];
+  nights: NightEntry[];
 };
+
+// `counts` is null when the night's digest can't be read as a found night; the view shows `—`.
+export type NightEntry = { night: string; counts: StatusCounts | null };
 
 // Nights on disk = runs/<YYYY-MM-DD>.jsonl, newest first.
 export function nightsOnDisk(runsDir: string): string[] {
@@ -22,11 +27,16 @@ export function nightsOnDisk(runsDir: string): string[] {
   }
 }
 
+function nightEntry(runsDir: string, night: string): NightEntry {
+  const digest = readNight(runsDir, night);
+  return { night, counts: digest.kind === 'found' ? digest.counts : null };
+}
+
 export function readStatus(config: RigConfig): Status {
   return {
     adapter: config.adapter,
     installed: config.installed,
     lastBeat: lastBeat(),
-    nights: nightsOnDisk(config.runsDir),
+    nights: nightsOnDisk(config.runsDir).map((n) => nightEntry(config.runsDir, n)),
   };
 }
