@@ -28,7 +28,20 @@ Read first: `docs/vision.md`, `docs/styleguide.md`. Decisions: `docs/adr/`.
    ```
 
 5. An issue is closed only when its "Done when" holds. If it can't hold yet, leave it open and
-   say what it waits on.
+   say what it waits on. A step that waits on someone else (a review, a reply) holds only once
+   they have acted, not when your side is sent.
+
+## What every issue carries
+
+Chosen by Jonas Eriksson on 2026-11-02 (plan morning-digest). Every issue split from a plan has:
+
+- First line: `Source: plan.md § <n>`.
+- Label: `plan:<plan name>`, e.g. `plan:morning-digest`.
+- Scope: the plan section's own words, not reworded. Add a line only for something the plan
+  leaves open, and say it was decided and when.
+- `Done when:` copied from the plan.
+- `Blocked by:` issue numbers or `—`. When only part of an issue is needed, name it:
+  `#1 (only its src/digest/types.ts commit)`.
 
 ## Skills
 
